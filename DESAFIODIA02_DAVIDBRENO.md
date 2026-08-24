@@ -56,4 +56,4 @@ david@SDA-D-COTIN-51:~/Downloads/linuxtemp/dia02$ uname -r
 ### Explicação do nominação das versões do Kernel do Linux 7.1.10-generic
 - O primeiro número *7* representa a versão príncipal.
 - O segundo número *1* representa o número da versão revisada principal.
-- O terceiro número *10* representa o nível de correção/correções menores (como pequenos ajustes)
+- O terceiro número *10* representa o nível de correção/correções menores (como pequenos ajustes).
