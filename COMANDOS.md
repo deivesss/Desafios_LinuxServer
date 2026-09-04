@@ -146,9 +146,9 @@ modificação das permissões do diretório ou arquivo.
 
 **Tutorial de Permissões**
 - `750` ou `rwxr-x---` a posição do número *7* se refere ao *dono*, a posição do número *5* se refere ao *grupo*, e a posição do número *0* se refere à *qualquer outro usuário que não seja o dono e que não esteja no grupo selecionado*.
-- `4` significa permissão de leitura de arquivos ou entrada em diretórios. (r)
+- `4` significa permissão de leitura de arquivos ou listagem de arquivos em diretórios. (r)
 - `2` significa permissão de escrita em arquivos ou criação de arquivos/pastas em diretórios. (w)
-- `1` significa permissão de execução de arquivos. (x)
+- `1` significa permissão de execução de arquivos ou entrar em diretórios. (x)
 
 **Explicação:**
 
@@ -167,3 +167,10 @@ o que vai no comando é a soma de permissões.
 - `chmod g+w arquivo.txt` grupo ganha permissão de escrever no arquivo.
 - `chmod go-r arquivo.txt` grupo e outros perdem permissão de ler o arquivo.
 - `chmod u=rwx,go=r-x diretorio/` dono ganha permissão total, grupo e outros ganham permissão de ler e executar.
+### `umask`
+retorna as permissões que são *tiradas* ao criar um novo arquivo ou diretório.
+
+**Exemplos:**
+- `umask 0002` retira a permissão de escrever de outros.
+- `umask 0077` retira todas as permissões de grupo e outros.
+- `umask 0122` retira a permissão de executar do dono, e a permissão de escrever de grupo e outros.
