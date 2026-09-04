@@ -12,7 +12,7 @@ exibe a lista de arquivos do diretório
 
 **Opções Úteis:**
 - `-a` exibe todos os arquivos inclusive os que têm *.* na frente.
-- `-l` exibe o author e o grupo de cada arquivo.
+- `-l` exibe o author, o grupo e as permissões de cada arquivo.
 - `-R` lista os arquivos dentro dos diretórios.
 ### `find`
 exibe exatamente o que você está procurando.
@@ -121,11 +121,49 @@ edição de usuários.
 - `-d` editar diretório home.
 - `-G` define os grupos do usuário. (os grupos antigos são removidos)
 - `-aG` atribui novos grupos ao usuário. (mantém os outros grupos)
+### `deluser`
+remoção de usuários.
 ### `groupadd`
 criação de novos grupos.
+### `groupdel`
+remoção de grupos.
 ### `getent`
 consulta de usuários e grupos.
 
 **Exemplos:**
 - `getent passwd aluno1` consulta o usuário *aluno1*.
 - `getent group alunos` consulta o grupo de *alunos*.
+## Permissões
+### `chown`
+mudança de dono e grupo de diretórios ou arquivos.
+
+**Exemplos:**
+- `chown aluno1:alunos diretorio_de_alunos` define o dono e grupo de *diretorio_de_alunos* para *aluno1* e *alunos*.
+- `chown :funcionarios diretorio_de_funcionarios` retira o dono e atribui o grupo de *diretorio_de_funcionarios* para *funcionarios*.
+- `chown -R sysadmin:administradores senhas/` define dono como sysadmin e grupo como administradores da pasta *senhas/* e todas as suas sub-pastas e arquivos recursivamente.
+### `chmod`
+modificação das permissões do diretório ou arquivo.
+
+**Tutorial de Permissões**
+- `750` ou `rwxr-x---` a posição do número *7* se refere ao *dono*, a posição do número *5* se refere ao *grupo*, e a posição do número *0* se refere à *qualquer outro usuário que não seja o dono e que não esteja no grupo selecionado*.
+- `4` significa permissão de leitura de arquivos ou entrada em diretórios. (r)
+- `2` significa permissão de escrita em arquivos ou criação de arquivos/pastas em diretórios. (w)
+- `1` significa permissão de execução de arquivos. (x)
+
+**Explicação:**
+
+o que vai no comando é a soma de permissões.
+- `7` é a soma de 4 + 2 + 1, que resulta na permissão total. (rwx)
+- `6` é a soma de 4 + 2, que resulta na permissão de ler e escrever, sem executar. (rw-)
+- `5` é a soma de 4 + 1, que resulta na permissão de ler e executar, sem escrever. (r-x)
+
+**Exemplos:**
+- `chmod 754 diretorio/` forcene permissão total ao dono (7) (rwx), permissão de leitura e execução ao grupo (5) (rw-) e permissão de leitura aos outros (4) (r--).
+- `chmod 770 diretorio/` fornece permissão total ao dono e ao grupo (77) (rwx) e deixa os outros sem permissões (0) (---).
+- `chmod rwxr-xr-x diretorio/` fornece total permissão ao dono (7) (rwx) e permissão de ler e executar para grupo e outros (55) (r-xr-x).
+
+**Outras Formas de usar `chmod`**
+- `chmod u+x arquivo.sh` dono ganha permissão de executar o arquivo.
+- `chmod g+w arquivo.txt` grupo ganha permissão de escrever no arquivo.
+- `chmod go-r arquivo.txt` grupo e outros perdem permissão de ler o arquivo.
+- `chmod u=rwx,go=r-x diretorio/` dono ganha permissão total, grupo e outros ganham permissão de ler e executar.
