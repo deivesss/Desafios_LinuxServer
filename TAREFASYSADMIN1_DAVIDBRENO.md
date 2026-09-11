@@ -197,3 +197,247 @@ drwxrwS--- 2 carla recepcao 4096 set 10 15:56 pacientes
 drwxrws--- 2 carla recepcao 4096 set 10 15:56 recepcao
 ```
 ## Etapa 5
+### 1. Torne-se (temporariamente) carla e crie, dentro de /srv/mar-de-vidro/pacientes, o arquivo paciente001.txt com duas linhas: Nome: Ana Pereira e Data: 2026-09-10.
+```bash
+[sex set 11 13:12:42] sysadmin@debian [~]$ su carla
+Senha: 
+carla@debian:/home/sysadmin$ cd /srv/mar-de-vidro/pacientes/
+carla@debian:/srv/mar-de-vidro/pacientes$ echo -e "Nome: Ana Pereira\nData: 2026:09:10" > paciente001.txt
+```
+### 2. Volte à sua conta administrativa e confirme quem é o dono e o grupo desse arquivo.
+```bash
+carla@debian:/srv/mar-de-vidro/pacientes$ su sysadmin
+Senha: 
+[sex set 11 13:21:01] sysadmin@debian [/srv/mar-de-vidro/pacientes]$ sudo ls -l
+total 4
+-rw-rw-r-- 1 carla recepcao 35 set 11 13:20 paciente001.txt
+```
+### 3. Verifique que o grupo é recepcao (não carla) — isso mostra que o SGID funcionou.
+```bash
+carla recepcao
+```
+### 4. Mostre o conteúdo do arquivo para confirmar as duas linhas.
+```bash
+[sex set 11 13:21:08] sysadmin@debian [/srv/mar-de-vidro/pacientes]$ sudo cat paciente001.txt
+Nome: Ana Pereira
+Data: 2026:09:10
+```
+## Etapa 6
+### 1. Crie uma cópia completa de /srv/mar-de-vidro em /srv/mar-de-vidro-bkp, preservando permissões, donos e datas (não apenas a estrutura).
+```bash
+[sex set 11 13:54:49] sysadmin@debian [/srv]$ sudo cp -rpv mar-de-vidro mar-de-vidro-backup
+'mar-de-vidro' -> 'mar-de-vidro-backup'
+'mar-de-vidro/pacientes' -> 'mar-de-vidro-backup/pacientes'
+'mar-de-vidro/pacientes/paciente001.txt' -> 'mar-de-vidro-backup/pacientes/paciente001.txt'
+'mar-de-vidro/recepcao' -> 'mar-de-vidro-backup/recepcao'
+'mar-de-vidro/logs' -> 'mar-de-vidro-backup/logs'
+[sex set 11 13:55:48] sysadmin@debian [/srv]$ sudo ls -lahR mar-de-vidro-backup/
+mar-de-vidro-backup/:
+total 20K
+drwxr-xr-x 5 carla recepcao 4,0K set 10 15:56 .
+drwxr-xr-x 9 root  root     4,0K set 11 13:54 ..
+drwxrwxrwt 2 carla recepcao 4,0K set 10 15:56 logs
+drwxrwS--- 2 carla recepcao 4,0K set 11 13:20 pacientes
+drwxrws--- 2 carla recepcao 4,0K set 10 15:56 recepcao
+
+mar-de-vidro-backup/logs:
+total 8,0K
+drwxrwxrwt 2 carla recepcao 4,0K set 10 15:56 .
+drwxr-xr-x 5 carla recepcao 4,0K set 10 15:56 ..
+
+mar-de-vidro-backup/pacientes:
+total 12K
+drwxrwS--- 2 carla recepcao 4,0K set 11 13:20 .
+drwxr-xr-x 5 carla recepcao 4,0K set 10 15:56 ..
+-rw-rw-r-- 1 carla recepcao   35 set 11 13:20 paciente001.txt
+
+mar-de-vidro-backup/recepcao:
+total 8,0K
+drwxrws--- 2 carla recepcao 4,0K set 10 15:56 .
+drwxr-xr-x 5 carla recepcao 4,0K set 10 15:56 ..
+```
+### 2. Crie um "atalho" chamado /srv/backup-atual que aponte para a cópia de segurança, e liste /srv para confirmar o enlace e para onde aponta.
+```bash
+[sex set 11 14:01:19] sysadmin@debian [/srv]$ sudo ln -s mar-de-vidro-backup backup-atual
+[sex set 11 14:01:25] sysadmin@debian [/srv]$ ls
+aval  backup-atual  compartilhado  hardening  lab  mar-de-vidro  mar-de-vidro-backup  projetos
+[sex set 11 14:01:33] sysadmin@debian [/srv]$ ls  backup-atual
+logs  pacientes  recepcao
+```
+### 3. Explique a diferença entre copiar recursivamente e copiar preservando atributos — por que você precisa das duas coisas juntas.
+o recursivo apenas inclui os diretórios na cópia. a preservação de atributos apenas preserva o dono, o grupo e as permissões dos arquivos.
+## Etapa 7
+### 1. Crie, em um único comando, 10 arquivos de log numerados de 01 a 10 (log01.txt ... log10.txt) na sua home.
+```bash
+[sex set 11 14:12:45] sysadmin@debian [~/logs]$ touch log{01..10}.txt
+[sex set 11 14:13:00] sysadmin@debian [~/logs]$ ls
+log01.txt  log03.txt  log05.txt  log07.txt  log09.txt
+log02.txt  log04.txt  log06.txt  log08.txt  log10.txt
+```
+### 2. Sem escrever um por um, mova apenas os arquivos 03, 06 e 09 para uma pasta nova chamada selecion.
+```bash
+[sex set 11 14:13:02] sysadmin@debian [~/logs]$ mkdir selection
+[sex set 11 14:14:03] sysadmin@debian [~/logs]$ mv log{03,06,09}.txt selection/
+```
+### 3. Conte quantos arquivos .conf existem em todo o /etc.
+```bash
+[sex set 11 14:16:39] sysadmin@debian [~/logs]$ sudo find /etc/ -name "*.conf" | wc -l
+55
+```
+### 4. Liste apenas os 10 primeiros arquivos .conf de /etc, em ordem alfabética.
+```bash
+[sex set 11 14:16:47] sysadmin@debian [~/logs]$ sudo find /etc/ -name "*.conf" | sort | head
+/etc/adduser.conf
+/etc/apparmor/parser.conf
+/etc/apt/listchanges.conf
+/etc/ca-certificates.conf
+/etc/debconf.conf
+/etc/deluser.conf
+/etc/dhcpcd.conf
+/etc/e2scrub.conf
+/etc/gai.conf
+/etc/host.conf
+```
+## Etapa 8
+### 1. A partir de /etc/passwd, gere uma lista das usuárias cujo shell é /bin/bash e salve em /tmp/usuarios-ativos.txt (sobrescrevendo o arquivo, se existir).
+```bash
+[sex set 11 14:20:19] sysadmin@debian [~]$ sudo cat /tmp/usuarios-ativos.txt
+root:x:0:0:root:/root:/bin/bash
+sysadmin:x:1000:1000:sysadmin,,,:/home/sysadmin:/bin/bash
+operador:x:1003:1006::/home/operador:/bin/bash
+estagiario:x:1004:1007::/home/estagiario:/bin/bash
+aluno1:x:1008:1008::/home/aluno1:/bin/bash
+aluno2:x:1009:1009::/home/aluno2:/bin/bash
+aluno3:x:1012:1016::/home/aluno3:/bin/bash
+carla:x:1013:1018::/home/carla:/bin/bash
+```
+### 2. Confirme quantas linhas (usuárias) o arquivo tem.
+```bash
+[sex set 11 14:20:29] sysadmin@debian [~]$ sudo wc -l /tmp/usuarios-ativos.txt
+8 /tmp/usuarios-ativos.txt
+```
+### 3. Acrescente a data atual ao final do arquivo, sem apagar o que já existia.
+```bash
+[sex set 11 14:20:29] sysadmin@debian [~]$ sudo wc -l /tmp/usuarios-ativos.txt
+8 /tmp/usuarios-ativos.txt
+```
+### 4. Execute um comando que produza bastante ruído (por exemplo, uma busca ampla sobre /) e envie toda a saída (normal e de erro) para o "ralo" /dev/null. Explique cada parte.
+```bash
+[sex set 11 14:28:02] sysadmin@debian [~]$ sudo ls -lahR / > /dev/null 2> /dev/null 
+[sex set 11 14:28:21] sysadmin@debian [~]$ 
+```
+o comando `ls -lahR /` exibe todos os diretorios e suas informacoes recursivamente da pasta raiz ´/´. a extensão ´ > /dev/null 2> /dev/null` redireciona todos os resultados e erros para o endereço mencionado.
+### 5. Gere um informe que apareça na tela E seja salvo em /tmp/informe-alta.txt, a partir de /tmp/usuarios-ativos.txt.
+```bash
+[sex set 11 14:39:31] sysadmin@debian [~]$ cat /tmp/usuarios-ativos.txt | tee /tmp/informe-alta.txt
+root:x:0:0:root:/root:/bin/bash
+sysadmin:x:1000:1000:sysadmin,,,:/home/sysadmin:/bin/bash
+operador:x:1003:1006::/home/operador:/bin/bash
+estagiario:x:1004:1007::/home/estagiario:/bin/bash
+aluno1:x:1008:1008::/home/aluno1:/bin/bash
+aluno2:x:1009:1009::/home/aluno2:/bin/bash
+aluno3:x:1012:1016::/home/aluno3:/bin/bash
+carla:x:1013:1018::/home/carla:/bin/bash
+11/09/2026
+```
+## Etapa 9
+### 1. Confirme os valores das variáveis de ambiente que definem o diretório pessoal dela, em quais caminhos o sistema procura comandos e o nome de usuário. (Pense em como "exibir" o valor de uma variável.)
+```bash
+carla@debian:/home$ env | grep PATH && env | grep USER
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+SUDO_USER=sysadmin
+USER=carla
+```
+### 2. Defina um atalho (alias) para que rm pergunte antes de apagar, e confira com uma listagem dos atalhos ativos.
+```bash
+carla@debian:~$ nano .bashrc 
+carla@debian:~$ source .bashrc 
+carla@debian:~$ head -2 .bashrc 
+# ALIASES
+alias rm="rm -i"
+carla@debian:~$ touch test.txt
+carla@debian:~$ rm test.txt
+rm: remover regular empty file 'test.txt'? yes
+carla@debian:~$ cat .bashrc | grep "alias "
+alias rm="rm -i"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+    #alias grep='grep --color=auto'
+    #alias fgrep='fgrep --color=auto'
+    #alias egrep='egrep --color=auto'
+#alias ll='ls -l'
+#alias la='ls -A'
+#alias l='ls -CF'
+```
+### 4. Repita o último comando que executou e busque um anterior no histórico. Explique como cada recurso funciona.
+```bash
+carla@debian:~$ cat .bashrc | grep "alias "
+alias rm="rm -i"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+    #alias grep='grep --color=auto'
+    #alias fgrep='fgrep --color=auto'
+    #alias egrep='egrep --color=auto'
+#alias ll='ls -l'
+#alias la='ls -A'
+#alias l='ls -CF'
+carla@debian:~$ !!
+cat .bashrc | grep "alias "
+alias rm="rm -i"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+    #alias grep='grep --color=auto'
+    #alias fgrep='fgrep --color=auto'
+    #alias egrep='egrep --color=auto'
+#alias ll='ls -l'
+#alias la='ls -A'
+#alias l='ls -CF'
+(failed reverse-i-search)`': ^Ct .bashrc | grep "alias "
+```
+o comando `!!` simplesmente repete o ultimo comando executado. já a combinação de teclas `Ctrl+R` realiza uma busca interativa pelo histórico.
+### 5. Justifique por que esse alias é uma boa prática de SysAdmin.
+para que ele não acabe excluindo arquivos sem querer, o comando pede uma confirmação antes de cada remoção.
+## Etapa 10
+### 1. Mostre a árvore completa de /srv/mar-de-vidro (pastas e arquivos dentro).
+```bash
+[sex set 11 15:28:23] sysadmin@debian [/home]$ sudo ls -R /srv/mar-de-vidro
+/srv/mar-de-vidro:
+logs  pacientes  recepcao
+
+/srv/mar-de-vidro/logs:
+
+/srv/mar-de-vidro/pacientes:
+paciente001.txt
+
+/srv/mar-de-vidro/recepcao:
+```
+### 2. Confirme donos e grupos dos arquivos de /srv/mar-de-vidro/pacientes/.
+```bash
+[sex set 11 15:28:29] sysadmin@debian [/home]$ sudo ls -lR /srv/mar-de-vidro/pacientes/
+/srv/mar-de-vidro/pacientes/:
+total 4
+-rw-rw-r-- 1 carla recepcao 35 set 11 13:20 paciente001.txt
+```
+### 3. Confirme para onde realmente aponta o enlace /srv/backup-atual.
+```bash
+[sex set 11 15:29:08] sysadmin@debian [/home]$ ls -la /srv/ | grep backup
+lrwxrwxrwx  1 root     root          19 set 11 14:01 backup-atual -> mar-de-vidro-backup
+drwxr-xr-x  5 carla    recepcao    4096 set 10 15:56 mar-de-vidro-backup
+```
+### 4. Revise seu próprio histórico de comandos da sessão.
+```bash
+[sex set 11 15:32:21] sysadmin@debian [/home]$ history | tail
+  935  ls -a carla
+  936  sudo apt update && sudo apt full_upgrade
+  937  sudo apt update && sudo apt full-upgrade
+  938  PATH=$PATH:~/bin
+  939  sudo ls -r /srv/mar-de-vidro
+  940  sudo ls -R /srv/mar-de-vidro
+  941  sudo ls -lR /srv/mar-de-vidro/pacientes/
+  942  ls -la /srv/ | grep backup
+  943  history
+  944  history | tail
+```
